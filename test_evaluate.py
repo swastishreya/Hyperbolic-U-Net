@@ -550,14 +550,6 @@ def test_evaluate(model, dataloader, device, amp,
 
     dice_loss, hd_dist, hd95_dist = 0, 0, 0
     tot_tp, tot_fp, tot_fn, tot_tn = torch.tensor([]), torch.tensor([]), torch.tensor([]), torch.tensor([])
-    sep_metrics_store = {
-        "inter_class": [],
-        "intra_class": [],
-        "separation_ratio": [],
-        "batch_inter_class_mean": [],
-        "batch_intra_class_mean": [],
-        "batch_separation_ratio_mean": [],
-    }
     times = []
 
     if cropper is not None:
@@ -585,33 +577,10 @@ def test_evaluate(model, dataloader, device, amp,
                 logits_masks = torch.cat(batch_preds, dim=0)
                 true_masks = torch.cat(batch_targets, dim=0)
             else:
-                if model_type == "hyp":
-                    logits_masks, hyp_feats = model(images) # Modify the model to return features
-                    batch_metrics, per_image_metrics = class_separation_metrics(hyp_feats, true_masks, model)
-                elif model_type == "euc":
-                    logits_masks, euc_feats = model(images) # Modify the model to return features
-                    batch_metrics, per_image_metrics = class_separation_metrics(euc_feats, true_masks, model)
+                logits_masks = model(images)
 
             end = time.time()
             times.append(end - start)
-            sep_metrics_store["inter_class"].append(
-                per_image_metrics["inter_class"].detach().cpu()
-            )
-            sep_metrics_store["intra_class"].append(
-                per_image_metrics["intra_class"].detach().cpu()
-            )
-            sep_metrics_store["separation_ratio"].append(
-                per_image_metrics["separation_ratio"].detach().cpu()
-            )
-            sep_metrics_store["batch_inter_class_mean"].append(
-                batch_metrics["inter_class_mean"].detach().cpu()
-            )
-            sep_metrics_store["batch_intra_class_mean"].append(
-                batch_metrics["intra_class_mean"].detach().cpu()
-            )
-            sep_metrics_store["batch_separation_ratio_mean"].append(
-                batch_metrics["mean_separation_ratio"].detach().cpu()
-            )
    
 
             # Metrics
@@ -639,9 +608,6 @@ def test_evaluate(model, dataloader, device, amp,
             hd_dist += max(hausdorff1, hausdorff2)
             hd95_dist += max(hausdorff95_1, hausdorff95_2)
         
-        inter_all = torch.cat(sep_metrics_store["inter_class"])
-        intra_all = torch.cat(sep_metrics_store["intra_class"])
-        ratio_all = torch.cat(sep_metrics_store["separation_ratio"])
         times = np.array(times)
 
     results = {
@@ -652,20 +618,6 @@ def test_evaluate(model, dataloader, device, amp,
         "dataset_iou": iou_score(tot_tp, tot_fp, tot_fn, tot_tn, reduction="micro").cpu().item(),
         "dataset_sensitivity": sensitivity(tot_tp, tot_fp, tot_fn, tot_tn, reduction="macro-imagewise").cpu().item(),
         "dataset_specificity": specificity(tot_tp, tot_fp, tot_fn, tot_tn, reduction="macro-imagewise").cpu().item(),
-        "inter_class_mean": inter_all.mean().item(),
-        "inter_class_std": inter_all.std(unbiased=False).item(),
-
-        "intra_class_mean": intra_all.mean().item(),
-        "intra_class_std": intra_all.std(unbiased=False).item(),
-
-        "separation_ratio_mean": ratio_all.mean().item(),
-        "separation_ratio_std": ratio_all.std(unbiased=False).item(),
-
-        "batch_separation_ratio_mean": torch.stack(
-            sep_metrics_store["batch_separation_ratio_mean"]
-        ).mean().item(),
-        "mean_ms": times.mean() * 1000,
-        "std_ms": times.std() * 1000
     }
     return results
 

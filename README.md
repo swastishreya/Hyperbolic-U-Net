@@ -158,13 +158,20 @@ python train.py \
 
 ### Testing Script
 
-The `test_evaluate.py` script provides comprehensive evaluation with various metrics:
+The `test.py` script provides comprehensive evaluation with various metrics:
 
 ```bash
-python test_evaluate.py \
+python test.py \
   --dataset <path_to_dataset> \
   --model_path <path_to_checkpoint> \
   --model <model_type> \
+  --channels 3 \
+  --classes 2 \
+  --init_feats 8 \
+  --depth 4 \
+  --batch-size 8 \
+  --scale 1.0 \
+  --curvature 0.1
   [additional arguments]
 ```
 
