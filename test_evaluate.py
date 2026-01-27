@@ -586,10 +586,10 @@ def test_evaluate(model, dataloader, device, amp,
                 true_masks = torch.cat(batch_targets, dim=0)
             else:
                 if model_type == "hyp":
-                    logits_masks, hyp_feats = model(images)
+                    logits_masks, hyp_feats = model(images) # Modify the model to return features
                     batch_metrics, per_image_metrics = class_separation_metrics(hyp_feats, true_masks, model)
                 elif model_type == "euc":
-                    logits_masks, euc_feats = model(images)
+                    logits_masks, euc_feats = model(images) # Modify the model to return features
                     batch_metrics, per_image_metrics = class_separation_metrics(euc_feats, true_masks, model)
 
             end = time.time()

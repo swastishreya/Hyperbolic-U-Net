@@ -97,9 +97,9 @@ The repository supports multiple medical imaging datasets with automatic dataloa
 
 ### Dataset Structure Example
 
-The `MakeDataset` class automatically handles various dataset formats. To check the dataset formats for the datasets check the [make_dataset.py](dataloading/make_dataset.py) file. Please ensure that the `img_suffix` and `mask_suffix` for the input image names and target masks names respectively are entered correctly. We have given the example of ISIC16 dataset below:
+The `MakeDataset` class automatically handles various dataset formats. To verify the dataset formats check the [make_dataset.py](dataloading/make_dataset.py) file. Please ensure that the `img_suffix` and `mask_suffix` for the input image names and target masks names respectively are entered correctly. We have given the example of ISIC16 dataset below:
 
-Datasets should follow this structures:
+Example dataset structure for ISIC16:
 
 ```
 ISIC/
@@ -147,9 +147,9 @@ python train.py \
   --alpha 0.3 \
   --beta 0.7 \
   --epochs 50 \
-  --batch-size 4 \
-  --learning-rate 1e-4 \
-  --scale 0.5 \
+  --batch-size 8 \
+  --learning-rate 1e-3 \
+  --scale 1.0 \
   --validation 10 \
   --amp
 ```

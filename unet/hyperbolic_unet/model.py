@@ -80,7 +80,7 @@ class FlexHUNet(nn.Module):
         x = self.switch_manifolds[0](x)
         logits = self.outc(x)
         logits = self.manifolds[0].logmap(x=None, y=logits)
-        return logits.tensor, x
+        return logits.tensor
 
     def use_checkpointing(self):
         """Wrap heavy layers with checkpointing inside nn.Module containers."""
@@ -149,7 +149,7 @@ class HUNet(nn.Module):
 
         logits = self.outc(x)
         logits = self.manifold.logmap(x=None, y=logits)
-        return logits.tensor, x
+        return logits.tensor
     
     def use_checkpointing(self):
         self.inc = CheckpointModule(self.inc)

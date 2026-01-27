@@ -53,7 +53,7 @@ class UNet(nn.Module):
                 self.feat_dict[self.depth+i+1] = x
 
         logits = self.outc(x)
-        return logits, x
+        return logits
     
     # def use_checkpointing(self):
     #     """
