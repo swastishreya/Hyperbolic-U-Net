@@ -11,7 +11,7 @@ This project implements state-of-the-art U-Net models for medical image segmenta
 - **Flexible Architectures**: Support for nested U-Net variants
 - **Multiple Loss Functions**: Dice, Tversky, Focal, Cross-Entropy, and combinations thereof
 - **Riemannian Optimization**: Support for Riemannian Adam and SGD optimizers for hyperbolic models
-- **Multi-Dataset Support**: Built-in support for ISIC, REFUGE2, OCTA, CVC-ColonDB, and other medical imaging datasets
+- **Multi-Dataset Support**: Built-in support for ISIC, REFUGE2, CVC-ColonDB, and other medical imaging datasets
 - **Experiment Tracking**: Integration with Weights & Biases (W&B) for experiment monitoring
 
 ## Requirements
@@ -84,15 +84,12 @@ pip install torch==2.4.0 torchvision==0.19.0 wandb==0.13.5 albumentations==2.0.0
 The repository supports multiple medical imaging datasets with automatic dataloader configuration. Please download them from the following links:
 
 ### Supported Datasets
-- **ISIC** / **ISIC18**: Skin lesion segmentation
-- **REFUGE2** : Optic disc/cup segmentation
-- **OCTA**: Optical Coherence Tomography Angiography
-- **CVC-ColonDB**: Polyp segmentation
-- **DRIVE**: Retinal vessel segmentation
-- **BUSI**: Breast Ultrasound Images
-- **KVASIR**: Gastrointestinal polyp dataset
-- **PROSTATE**: Prostate segmentation
-- **PANXRAYS**: Panoramic X-rays
+- [**ISIC** / **ISIC18**](https://challenge.isic-archive.com/data/) : Skin lesion segmentation 
+- [**REFUGE2**](https://www.kaggle.com/datasets/victorlemosml/refuge2) : Optic disc/cup segmentation
+- [**CVC-ColonDB**](http://vi.cvc.uab.es/colon-qa/cvccolondb/): Polyp segmentation
+- [**BUSI**](https://www.sciencedirect.com/science/article/pii/S2352340919312181): Breast Ultrasound Images
+- [**KVASIR**](https://datasets.simula.no/kvasir-seg/): Gastrointestinal polyp dataset
+- [**SANET**](https://github.com/weijun-arc/SANet): Polyp segmentation
 - **nnU-Net Format**: Any dataset in nnU-Net format with `imagesTr/labelsTr` and `imagesTs/labelsTs` directories
 
 ### Dataset Structure Example
@@ -153,6 +150,12 @@ python train.py \
   --validation 10 \
   --amp
 ```
+## Output
+
+Model weights are saved in:
+```
+./checkpoints/<dataset_name>/<model_name>
+```
 
 ## Evaluation and Testing
 
@@ -162,8 +165,8 @@ The `test.py` script provides comprehensive evaluation with various metrics:
 
 ```bash
 python test.py \
-  --dataset <path_to_dataset> \
-  --model_path <path_to_checkpoint> \
+  --dataset ./datasets/ISIC \
+  --load <path_to_checkpoint> \
   --model <model_type> \
   --channels 3 \
   --classes 2 \
@@ -172,40 +175,32 @@ python test.py \
   --batch-size 8 \
   --scale 1.0 \
   --curvature 0.1
+  --experiment_name <name_of_experiment>
   [additional arguments]
 ```
 
 ### Evaluation Metrics
 
 The framework automatically computes:
-- **Dice Score**: F1 score for segmentation
-- **IoU (Intersection over Union)**: Jaccard index
-- **Sensitivity (Recall)**: True positive rate
-- **Specificity**: True negative rate
-- **Hausdorff Distance**: Surface distance metric
-- **Hausdorff Distance 95**: 95th percentile of surface distances
+- **Dice Score**
+- **IoU (Intersection over Union)**
+- **Sensitivity (Recall)**
+- **Specificity**
+- **Hausdorff Distance**
+- **Hausdorff Distance 95**
+
+The evaluation results are saved under the directory `<name_of_experiment>`
 
 ## Model Architectures
 
 ### Euclidean U-Net (`euc`)
-Standard U-Net architecture operating in Euclidean space with:
-- Symmetric encoder-decoder structure
-- Skip connections
-- Configurable depth and initial feature maps
-- Optional bilinear upsampling
+Standard U-Net architecture operating in Euclidean space.
 
 ### Hyperbolic U-Net (`hyp`)
-U-Net operating in hyperbolic space (Poincaré ball model) with:
-- Riemannian operations on hyperbolic manifolds
-- Configurable manifold curvature
-- Optional trainable curvature parameters
-- Improved robustness for hierarchical data
+U-Net operating in hyperbolic space (Poincaré ball model).
 
-### Nested U-Net (`nunet`, `hnunet`)
-U-Net with nested skip connections (dense connections within the architecture)
-
-### Nested U-Net with Deep Supervision (`nestedunet`, `hnestedunet`)
-Nested architectures with deep supervision for multi-scale learning
+### U-Net++ and Hyperbolic U-Net++ (`nestedunet`, `hnestedunet`)
+Euclidean and Hyperbolic variants of U-Net++
 
 ## Loss Functions
 
@@ -229,22 +224,8 @@ This project integrates with **Weights & Biases** (W&B) for experiment tracking:
 ```bash
 wandb login
 ```
-
 2. **Automatic Logging**: All training metrics, configurations, and checkpoints are logged to W&B
 3. **Monitor**: View real-time training progress at https://wandb.ai/
-
-## Output
-
-Training outputs are saved in:
-```
-./checkpoints/<dataset_name>/
-```
-
-Each checkpoint includes:
-- Model weights
-- Training configuration
-- Mask values (for reconstruction)
-- Epoch and step information
 
 ## GPU Memory Management
 
@@ -273,7 +254,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## References
 
-- U-Net: Convolutional Networks for Biomedical Image Segmentation (Ronneberger et al., 2015)
+- U-net: Convolutional networks for biomedical image segmentation (Ronneberger et al., 2015)
+- Unet++: Redesigning skip connections to exploit multiscale features in image segmentation (Zhou et al., 2019)
 - Hyperbolic Learning Library: https://github.com/maxvanspengler/hyperbolic_learning_library
 
 ---
