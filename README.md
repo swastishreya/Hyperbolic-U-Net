@@ -1,6 +1,8 @@
 # Hyperbolic U-Net
 
-A PyTorch implementation of Hyperbolic U-Net architectures for robust medical image segmentation. This repository contains both Euclidean and Hyperbolic variants of U-Net models, including support for flexible curvature settings and various loss functions optimized for medical image analysis.
+This is the official implementation of the paper **"Hyperbolic U-Net for Robust Medical Image Segmentation"** accepted to **MIDL 2026** ([link](https://openreview.net/forum?id=NxKaeTNMxR#discussion)). A PyTorch implementation of Hyperbolic U-Net architectures for robust medical image segmentation. This repository contains both Euclidean and Hyperbolic variants of U-Net models, including support for flexible curvature settings and various loss functions optimized for medical image analysis.
+
+![Qualitative example of Hyperbolic versus Euclidean U-Net on a skin lesion image for all noise types.](figs/isic16_robustness_qual_exp.png)
 
 ## Overview
 
@@ -42,7 +44,7 @@ conda env create -f environment.yml
 conda activate hypunet
 ```
 
-### Fallback: Manual Installation
+<details><summary>Fallback: Manual Installation</summary>
 
 If the `environment.yml` file fails, you can set up the environment manually:
 
@@ -77,6 +79,8 @@ conda install pytorch torchvision torchaudio cpuonly -c pytorch
 ```bash
 pip install torch==2.4.0 torchvision==0.19.0 wandb==0.13.5 albumentations==2.0.0 nibabel==5.3.2 scikit-image==0.25.2 medpy==0.5.2 hypll==0.1.1 pandas numpy scipy tqdm
 ```
+
+</details>
 
 
 ## Data Preparation
