@@ -241,14 +241,14 @@ If you encounter out-of-memory errors:
 
 ## Citation
 
-If you use this code in your research, please cite:
+If you use this code or paper in your research, please cite:
 
 ```bibtex
-@software{hyperbolic_unet_2025,
-  author = {Mishra, Swasti Shreya},
-  title = {Hyperbolic U-Net for Medical Image Segmentation},
-  year = {2025},
-  url = {https://github.com/yourusername/Hyperbolic-U-Net}
+@inproceedings{mishra2026hyperbolic,
+  title={Hyperbolic U-Net for Robust Medical Image Segmentation},
+  author={Mishra, Swasti Shreya and van Spengler, Max and Berkhout, Erwin and Mettes, Pascal},
+  booktitle={Medical Imaging with Deep Learning},
+  year={2026}
 }
 ```
 
